@@ -1,42 +1,39 @@
-var express = require('express');
-var router = express.Router();
-var uuidv4 = require('uuid/v4');
-var debug = require('debug')('baseball-scorekeeper-express:games');
-var MemoryDataStore = require('../data/memoryGameStore');
+const express = require('express');
+const router = express.Router();
+const uuidv4 = require('uuid/v4');
+const debug = require('debug')('baseball-scorekeeper-express:games');
+const gamesStore = require('../data/gameDataStoreFactory')('couch');
 
-const gamesStore = new MemoryDataStore();
-
-router.get('/', (req, res) => res.json(gamesStore.getAll()));
-router.get('/:id', (req, res) => {
+router.get('/', async (req, res) => res.json(await gamesStore.getAll()));
+router.get('/:id', async (req, res) => {
     const id = req.params['id'];
     debug(`got request for id: ${id}`);
 
-    const game = gamesStore.getGame(id);
-
-    if(game) {
+    try {
+        const game = await gamesStore.getGame(id);
         res.json(game);
-    } else {
+    } catch (err) {
         debug(`game [${id}] not found`);
         res.sendStatus(404);
     }
 });
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const game = req.body;
     game.id = uuidv4();
 
     console.log(game);
-    gamesStore.addGame(game);
+    await gamesStore.addGame(game);
     res.location(`${req.originalUrl}/${game.id}`);
     res.sendStatus(204);
 });
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     const id = req.params['id'];
     debug(`got update request for id: ${id}`);
 
     const game = req.body;
 
     try {
-        gamesStore.updateGame(id, game);
+        await gamesStore.updateGame(id, game);
         res.sendStatus(204);
     } catch (err) {
         console.dir(err);
@@ -47,11 +44,11 @@ router.put('/:id', (req, res) => {
     }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     const id = req.params['id'];
     debug(`got delete request for id: ${id}`);
 
-    gamesStore.deleteGame(id);
+    await gamesStore.deleteGame(id);
     res.sendStatus(204);
 });
 
