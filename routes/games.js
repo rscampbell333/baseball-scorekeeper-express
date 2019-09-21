@@ -13,8 +13,12 @@ router.get('/:id', async (req, res) => {
         const game = await gamesStore.getGame(id);
         res.json(game);
     } catch (err) {
-        debug(`game [${id}] not found`);
-        res.sendStatus(404);
+        if(err.notFound) {
+            debug(`game [${id}] not found`);
+            res.sendStatus(404);
+        } else {
+            res.sendStatus(500);
+        }
     }
 });
 router.post('/', async (req, res) => {
@@ -36,10 +40,11 @@ router.put('/:id', async (req, res) => {
         await gamesStore.updateGame(id, game);
         res.sendStatus(204);
     } catch (err) {
-        console.dir(err);
         if(err.notFound) {
             debug(`game [${id}] not found`);
             res.sendStatus(404);
+        } else {
+            res.sendStatus(500);
         }
     }
 });
