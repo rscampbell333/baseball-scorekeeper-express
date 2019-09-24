@@ -9,12 +9,16 @@ class CouchDataStore {
         this.scorecards = await nano.db.use('scorecards');
     }
 
-    async getAll() {
+    async getAll(includeScores) {
         const docs = await this.scorecards.list({include_docs: true});
         const games = docs.rows.map(rows => rows.doc);
         games.forEach(game => {
             delete game._id;
             delete game._rev;
+
+            if(!includeScores) {
+                delete game.innings;
+            }
         })
 
         return games;
@@ -43,6 +47,7 @@ class CouchDataStore {
             const doc = await this.scorecards.get(id);
             game._id = id;
             game._rev = doc._rev;
+            game.id = game;
             debug(`got rev ${game._rev}`);
             await this.scorecards.insert(game)
         } catch (err) {
