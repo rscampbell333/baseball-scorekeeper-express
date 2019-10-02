@@ -8,6 +8,7 @@ router.get('/', async (req, res) => {
     try {
         res.json(await gamesStore.getAll());
     } catch (err) {
+        console.log(err);
         res.sendStatus(500);
     }
 });

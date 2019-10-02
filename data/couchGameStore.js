@@ -21,12 +21,12 @@ class CouchDataStore {
                     delete game.innings;
                 }
             });
+            
+            return games;
         } catch (err) {
             console.log(err);
             throw { connectionError: true };
         }
-
-        return games;
     }
 
     async getGame(id) {
