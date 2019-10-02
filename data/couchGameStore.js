@@ -10,16 +10,21 @@ class CouchDataStore {
     }
 
     async getAll(includeScores) {
-        const docs = await this.scorecards.list({include_docs: true});
-        const games = docs.rows.map(rows => rows.doc);
-        games.forEach(game => {
-            delete game._id;
-            delete game._rev;
+        try {
+            const docs = await this.scorecards.list({include_docs: true});
+            const games = docs.rows.map(rows => rows.doc);
+            games.forEach(game => {
+                delete game._id;
+                delete game._rev;
 
-            if(!includeScores) {
-                delete game.innings;
-            }
-        })
+                if(!includeScores) {
+                    delete game.innings;
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            throw { connectionError: true };
+        }
 
         return games;
     }
@@ -33,13 +38,21 @@ class CouchDataStore {
             if(err.error === 'not_found') {
                 debug(`doc id[${id}] does not exist`);
                 throw ({id: id, notFound: true})
+            } else {
+                console.log(err);
+                throw { connectionError: true };
             }
         }
     }
 
     async addGame(game) {
         game._id = game.id;
-        await this.scorecards.insert(game);
+        try {
+            await this.scorecards.insert(game);
+        } catch (err) {
+            console.log(err);
+            throw { connectionError: true };
+        }
     }
 
     async updateGame(id, game) {
@@ -56,6 +69,7 @@ class CouchDataStore {
                 throw ({id: id, notFound: true});
             } else {
                 console.log(err);
+                throw { connectionError: true };
             }
         }
     }
@@ -70,6 +84,7 @@ class CouchDataStore {
                 debug(`doc id[${id}] does not exist`);
             } else {
                 console.log(err);
+                throw { connectionError: true };
             }
         }
     }
