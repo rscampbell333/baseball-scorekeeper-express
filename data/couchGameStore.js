@@ -60,7 +60,7 @@ class CouchDataStore {
             const doc = await this.scorecards.get(id);
             game._id = id;
             game._rev = doc._rev;
-            game.id = game;
+            game.id = id;
             debug(`got rev ${game._rev}`);
             await this.scorecards.insert(game)
         } catch (err) {
