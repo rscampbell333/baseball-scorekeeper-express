@@ -2,7 +2,7 @@ CREATE TABLE games (
     id UUID PRIMARY KEY,
     date DATE,
     home_team TEXT,
-    away TEXT
+    away_team TEXT
 );
 
 CREATE TABLE at_bats (
