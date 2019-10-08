@@ -5,12 +5,22 @@ CREATE TABLE games (
     away_team TEXT
 );
 
-CREATE TABLE at_bats (
-    game_id UUID REFERENCES games(id),
+CREATE TABLE batting_positions (
+    game_id UUID REFERENCES games(id) ON DELETE CASCADE,
+    position SMALLINT,
     player TEXT,
+    since SMALLINT
+);
+
+CREATE INDEX ON batting_positions(game_id);
+
+CREATE TABLE at_bats (
+    game_id UUID REFERENCES games(id) ON DELETE CASCADE,
     inning SMALLINT,
     balls SMALLINT,
     strikes SMALLINT,
     position SMALLINT,
     result TEXT
 );
+
+CREATE INDEX ON at_bats(game_id);
