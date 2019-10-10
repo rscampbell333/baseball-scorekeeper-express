@@ -106,8 +106,9 @@ class PostgresDataStore {
         const client = await pool.connect();
 
         try {
-            const updateGame = "UPDATE games SET date = $1 AND home_team = $2 WHERE id = $3";
-            const values = [ game.metadata.date, game.metadata.teamName, id ];
+            const updateGame = "UPDATE games SET date = $1, home_team = $2 WHERE id = $3";
+            const values = [ new Date(game.metadata.date), game.metadata.teamName, id ];
+            console.log(values);
             await client.query('BEGIN');
             await client.query(updateGame, values);
 

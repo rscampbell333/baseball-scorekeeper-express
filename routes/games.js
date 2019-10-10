@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const uuidv4 = require('uuid/v4');
 const debug = require('debug')('baseball-scorekeeper-express:games');
-const gamesStore = require('../data/gameDataStoreFactory')('couch');
+const gamesStore = require('../data/gameDataStoreFactory')('postgres');
 
 router.get('/', async (req, res) => {
     try {
