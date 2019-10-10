@@ -157,10 +157,4 @@ class PostgresDataStore {
     }   
 }
 
-(async () => {
-    const game = {"_id":"7cf38328-9af7-459f-8228-08f876f687a3","_rev":"18-02fb4df9d0a3976f649137c49461e576","metadata":{"teamName":"Rangers","date":"2019-06-19T05:00:00.000Z"},"innings":[{"position":1,"results":[{"inning":1,"result":"2B","bases":[{"name":"first","reached":true},{"name":"second","reached":true},{"name":"third","reached":true},{"name":"home","reached":true}],"count":{"balls":2,"strikes":1}}],"players":[{"name":"Andrus","since":0}]},{"position":2,"results":[{"inning":1,"result":"K","bases":[{"name":"first","reached":false},{"name":"second","reached":false},{"name":"third","reached":false},{"name":"home","reached":false}],"count":{"balls":2,"strikes":2}}],"players":[{"name":"Beltre","since":0}]},{"position":3,"results":[{"inning":1,"result":"HR","bases":[{"name":"first","reached":true},{"name":"second","reached":true},{"name":"third","reached":true},{"name":"home","reached":true}],"count":{"balls":0,"strikes":0}}],"players":[{"name":"Mazara","since":0}]},{"position":4,"results":[{"inning":1,"result":"1B","bases":[{"name":"first","reached":true},{"name":"second","reached":false},{"name":"third","reached":false},{"name":"home","reached":false}],"count":{"balls":0,"strikes":0}}],"players":[{"name":"Gallo","since":0}]},{"position":5,"results":[],"players":[{"name":"Kiner-Falefa","since":0}]},{},{},{},{}],"id":"7cf38328-9af7-459f-8228-08f876f687a3"}
-    const gameStore = new PostgresDataStore();
-    console.log(JSON.stringify(await gameStore.getGame('7cf38328-9af7-459f-8228-08f876f687a3'), null, 2));
-})();
-
 module.exports = PostgresDataStore;
