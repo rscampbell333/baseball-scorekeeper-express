@@ -46,15 +46,15 @@ class PostgresDataStore {
                     const { inning, result, balls, strikes, position, farthest_base: farthestBase } = atBatRow;
                     const atBat = { inning, result, farthestBase, count: { balls, strikes }};
 
-                    positions[position - 1].results.push(atBat);
+                    positions[position - 1].results[inning - 1] = atBat;
                 }
 
                 const selectPositions = "SELECT player, position, since FROM batting_positions WHERE game_id = $1";
                 const positionRows = await client.query(selectPositions, values);
 
                 for(let positionRow of positionRows.rows) {
-                    const { player, since, position } = positionRow;
-                    positions[position - 1].players.push({ player, since });
+                    const { player: name, since, position } = positionRow;
+                    positions[position - 1].players.push({ name, since });
                 }
 
                 game.innings = positions;
@@ -81,7 +81,7 @@ class PostgresDataStore {
             for(let position of game.innings) {
                 if(position.results) {
                     for(let atBat of position.results) {
-                        const atBatValues = [ game.id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, at.farthestBase ];
+                        const atBatValues = [ game.id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, atBat.farthestBase ];
                         await client.query(insertAtBat, atBatValues);
                     }
                 }
@@ -124,8 +124,10 @@ class PostgresDataStore {
             for(let position of game.innings) {
                 if(position.results) {
                     for(let atBat of position.results) {
-                        const atBatValues = [ id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, atBat.farthestBase ];
-                        await client.query(insertAtBat, atBatValues);
+                        if(atBat) {
+                            const atBatValues = [ id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, atBat.farthestBase ];
+                            await client.query(insertAtBat, atBatValues);
+                        }
                     }
                 }
 
