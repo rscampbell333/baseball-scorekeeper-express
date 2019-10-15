@@ -74,6 +74,7 @@ class PostgresDataStore {
     try {
       const insert = 'INSERT INTO games VALUES ($1, $2, $3, $4)';
       const values = [game.id, game.metadata.date, game.metadata.teamName, null];
+      debug(`Creating game meta data with query ${insert} and values ${values}`);
       await client.query('BEGIN');
       await client.query(insert, values);
 
@@ -112,7 +113,7 @@ class PostgresDataStore {
     try {
       const updateGame = 'UPDATE games SET date = $1, home_team = $2 WHERE id = $3';
       const values = [new Date(game.metadata.date), game.metadata.teamName, id];
-      console.log(values);
+      debug(`Updating game metadata with query ${updateGame} and values ${values}`);
       await client.query('BEGIN');
       await client.query(updateGame, values);
 
