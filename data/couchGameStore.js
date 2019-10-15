@@ -21,8 +21,8 @@ class CouchDataStore {
 
       return games;
     } catch (err) {
-      console.log(err);
-      throw { connectionError: true };
+      console.error('Error getting games', err.stack);
+      throw Error('DB error');
     }
   }
 
@@ -36,8 +36,8 @@ class CouchDataStore {
         debug(`doc id[${id}] does not exist`);
         throw ({ id: id, notFound: true });
       } else {
-        console.log(err);
-        throw { connectionError: true };
+        console.error('Error getting games', err.stack);
+        throw Error('DB error');
       }
     }
   }
@@ -47,8 +47,8 @@ class CouchDataStore {
     try {
       await this.scorecards.insert(game);
     } catch (err) {
-      console.log(err);
-      throw { connectionError: true };
+      console.error('Error getting games', err.stack);
+      throw Error('DB error');
     }
   }
 
@@ -65,8 +65,8 @@ class CouchDataStore {
         debug(`doc id[${id}] does not exist`);
         throw ({ id: id, notFound: true });
       } else {
-        console.log(err);
-        throw { connectionError: true };
+        console.error('Error getting games', err.stack);
+        throw Error('DB error');
       }
     }
   }
@@ -80,8 +80,8 @@ class CouchDataStore {
       if (err.error === 'not_found') {
         debug(`doc id[${id}] does not exist`);
       } else {
-        console.log(err);
-        throw { connectionError: true };
+        console.error('Error getting games', err.stack);
+        throw Error('DB error');
       }
     }
   }
