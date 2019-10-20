@@ -1,6 +1,6 @@
 CREATE TABLE games (
     id UUID PRIMARY KEY,
-    date DATE,
+    date TIMESTAMPTZ,
     home_team TEXT,
     away_team TEXT
 );
@@ -20,7 +20,8 @@ CREATE TABLE at_bats (
     balls SMALLINT,
     strikes SMALLINT,
     position SMALLINT,
-    result TEXT
+    result TEXT,
+    farthest_base TEXT
 );
 
 CREATE INDEX ON at_bats(game_id);
