@@ -86,8 +86,10 @@ class PostgresDataStore {
       for (const position of game.innings) {
         if (position.results) {
           for (const atBat of position.results) {
-            const atBatValues = [game.id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, atBat.farthestBase];
-            await client.query(insertAtBat, atBatValues);
+            if (atBat && atBat.inning && atBat.count && atBat.result && atBat.farthestBase) {
+              const atBatValues = [game.id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, atBat.farthestBase];
+              await client.query(insertAtBat, atBatValues);
+            }
           }
         }
 
@@ -130,7 +132,7 @@ class PostgresDataStore {
       for (const position of game.innings) {
         if (position.results) {
           for (const atBat of position.results) {
-            if (atBat) {
+            if (atBat && atBat.inning && atBat.count && atBat.result && atBat.farthestBase) {
               const atBatValues = [id, atBat.inning, atBat.count.balls, atBat.count.strikes, position.position, atBat.result, atBat.farthestBase];
               await client.query(insertAtBat, atBatValues);
             }
