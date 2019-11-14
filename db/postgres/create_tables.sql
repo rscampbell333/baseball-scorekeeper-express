@@ -7,6 +7,7 @@ CREATE TABLE games (
 
 CREATE TABLE batting_positions (
     game_id UUID REFERENCES games(id) ON DELETE CASCADE,
+    home BOOLEAN,
     position SMALLINT,
     player TEXT,
     since SMALLINT
@@ -16,12 +17,13 @@ CREATE INDEX ON batting_positions(game_id);
 
 CREATE TABLE at_bats (
     game_id UUID REFERENCES games(id) ON DELETE CASCADE,
+    home BOOLEAN,
     inning SMALLINT,
     balls SMALLINT,
     strikes SMALLINT,
     position SMALLINT,
     result TEXT,
-    farthest_base TEXT
+    farthest_base SMALLINT
 );
 
 CREATE INDEX ON at_bats(game_id);
