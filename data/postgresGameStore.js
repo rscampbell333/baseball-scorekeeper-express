@@ -15,9 +15,9 @@ class PostgresDataStore {
     const client = await pool.connect();
 
     try {
-      const selectGames = 'SELECT id, date, home_team FROM games';
+      const selectGames = 'SELECT id, date, home_team, away_team FROM games';
       const gameRows = await client.query(selectGames);
-      const games = gameRows.rows.map(({ id, date, home_team: homeTeam }) => ({ id, metadata: { date, teamName: homeTeam } }));
+      const games = gameRows.rows.map(({ id, date, home_team: homeTeam, away_team: awayTeam }) => ({ id, metadata: { date, homeTeam, awayTeam } }));
 
       return games;
     } catch (err) {
@@ -87,7 +87,7 @@ class PostgresDataStore {
 
       const insertAtBat = 'INSERT INTO at_bats(game_id, inning, balls, strikes, position, result, farthest_base, home) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
       const insertPlayer = 'INSERT INTO batting_positions(game_id, position, player, since, home) VALUES ($1, $2, $3, $4, $5)';
-      
+
       for (const team of ['home', 'away']) {
         const innings = game.innings[team];
         const isHome = team === 'home';
