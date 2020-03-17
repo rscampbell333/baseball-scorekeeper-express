@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://rscampbell333.github.io'],
+  origin: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : [],
   exposedHeaders: ['location']
 }));
 
