@@ -55,13 +55,13 @@ class PostgresDataStore {
           positions[position - 1].results[inning - 1] = atBat;
         }
 
-        const selectPositions = 'SELECT player, position, since, home FROM batting_positions WHERE game_id = $1';
+        const selectPositions = 'SELECT player, position, since, home, field_position FROM batting_positions WHERE game_id = $1';
         const positionRows = await client.query(selectPositions, values);
 
         for (const positionRow of positionRows.rows) {
-          const { player: name, since, position, home } = positionRow;
+          const { player: name, since, position, home, field_position: fieldPosition } = positionRow;
           const positions = home ? homePositions : awayPositions;
-          positions[position - 1].players.push({ name, since });
+          positions[position - 1].players.push({ name, since, fieldPosition });
         }
 
         game.innings = { home: homePositions, away: awayPositions };
@@ -86,7 +86,7 @@ class PostgresDataStore {
       await client.query(insert, values);
 
       const insertAtBat = 'INSERT INTO at_bats(game_id, inning, balls, strikes, position, result, farthest_base, home) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
-      const insertPlayer = 'INSERT INTO batting_positions(game_id, position, player, since, home) VALUES ($1, $2, $3, $4, $5)';
+      const insertPlayer = 'INSERT INTO batting_positions(game_id, position, player, since, home, field_position) VALUES ($1, $2, $3, $4, $5, $6)';
 
       for (const team of ['home', 'away']) {
         const innings = game.innings[team];
@@ -104,8 +104,8 @@ class PostgresDataStore {
 
           if (position.players) {
             for (const player of position.players) {
-              const { name, since } = player;
-              const playerValues = [game.id, position.position, name, since, isHome];
+              const { name, since, fieldPosition } = player;
+              const playerValues = [game.id, position.position, name, since, isHome, fieldPosition];
               await client.query(insertPlayer, playerValues);
             }
           }
@@ -138,7 +138,7 @@ class PostgresDataStore {
       client.query(deleteOldPositions, [id]);
 
       const insertAtBat = 'INSERT INTO at_bats(game_id, inning, balls, strikes, position, result, farthest_base, home) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
-      const insertPlayer = 'INSERT INTO batting_positions(game_id, position, player, since, home) VALUES ($1, $2, $3, $4, $5)';
+      const insertPlayer = 'INSERT INTO batting_positions(game_id, position, player, since, home, field_position) VALUES ($1, $2, $3, $4, $5, $6)';
       for (const team of ['home', 'away']) {
         const innings = game.innings[team];
         const isHome = team === 'home';
@@ -156,8 +156,8 @@ class PostgresDataStore {
 
           if (position.players) {
             for (const player of position.players) {
-              const { name, since } = player;
-              const playerValues = [id, position.position, name, since, isHome];
+              const { name, since, fieldPosition } = player;
+              const playerValues = [id, position.position, name, since, isHome, fieldPosition];
               await client.query(insertPlayer, playerValues);
             }
           }
